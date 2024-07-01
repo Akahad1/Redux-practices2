@@ -14,25 +14,39 @@ import { Label } from "../../../components/ui/label";
 import { FormEvent, useState } from "react";
 import { DialogClose } from "@radix-ui/react-dialog";
 import { useAppDispatch } from "../../hook";
-import { addTodo } from "../TodoSlice";
+
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../../../components/ui/select";
+import { useAddTodoMutation } from "../../Api/api";
 
 const AddTodoModel = () => {
   const [task, setTask] = useState("");
   const [description, setDescription] = useState("");
+  // from local starte
+  // const dispatch = useAppDispatch();
 
-  const dispatch = useAppDispatch();
+  const [addTodo, { data, isLoading }] = useAddTodoMutation();
+  const [priority, setPriority] = useState("");
 
   const onSubmit = (e: FormEvent) => {
     e.preventDefault();
 
-    const randomString = Math.random().toString().substring(2, 7);
-    console.log({ randomString, task, description });
+    // const randomString = Math.random().toString().substring(2, 7);
+    // console.log({ randomString, task, description });
     const taskDetails = {
-      id: randomString,
       title: task,
       description: description,
+      isComplite: false,
+      Priority: priority,
     };
-    dispatch(addTodo(taskDetails));
+    console.log(taskDetails);
+    // dispatch(addTodo(taskDetails));
+    addTodo(taskDetails);
   };
   return (
     <div>
@@ -69,6 +83,21 @@ const AddTodoModel = () => {
                   id="descrption"
                   className="col-span-3"
                 />
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="description" className="text-right">
+                  Priority
+                </Label>
+                <Select onValueChange={(v) => setPriority(v)}>
+                  <SelectTrigger className="col-span-3">
+                    <SelectValue placeholder="priority" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="High">High</SelectItem>
+                    <SelectItem value="Medium">Medium</SelectItem>
+                    <SelectItem value="Low">Low</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
             </div>
             <div className="flex justify-end">
